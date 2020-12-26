@@ -65,13 +65,14 @@ export default defineComponent({
     watch(() => authData.email.value, validatEmail);
     watch(() => authData.password.value, validatePassword);
     const router = useRouter();
-    console.log(isAuth.value);
+
     const auth = async () => {
       await send();
-      console.log(isAuth.value);
-      if (isAuth.value) {
-        router.replace("/articles");
-      }
+       console.log(isAuth.value);
+       if(isAuth.value === true){
+         router.replace('/articles');
+       }
+       
     };
 
     return {

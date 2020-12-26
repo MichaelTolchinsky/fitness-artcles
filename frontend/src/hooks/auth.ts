@@ -6,17 +6,21 @@ const state = reactive({
   userId: '',
   token: '',
   didAutoLogout: false,
-  error: ''
+  error: '',
+  isAuth: false
 });
 
+const authApiUrl = 'http://localhost:3000/auth';
+
 // mutations
-function setUser(payload: { token: string; userId: string }){
+function setUser(payload: { token: string; userId: string; isAuth: boolean }) {
   state.token = payload.token;
   state.userId = payload.userId;
   state.didAutoLogout = false;
+  state.isAuth = payload.isAuth;
 }
 
-function setAutoLogout(){
+function setAutoLogout() {
   state.didAutoLogout = true;
 }
 
@@ -30,30 +34,35 @@ export function logout() {
   setUser({
     token: '',
     userId: '',
+    isAuth:false
   });
 }
 
-function autoLogout(){
+function autoLogout() {
   logout();
   setAutoLogout();
 }
 
-async function auth(payload: { email: string; password: string },mode: string) {
+async function auth(payload: { email: string; password: string }, mode: string) {
   let url =
-    `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.VUE_APP_API_KEY}`;
+    `${authApiUrl}/login`;
   if (mode === 'signup') {
     url =
-      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.VUE_APP_API_KEY}`;
+      `${authApiUrl}/signup`;
   }
+
   const response = await fetch(url, {
     method: 'POST',
     body: JSON.stringify({
       email: payload.email,
       password: payload.password,
-      returnSecureToken: true
-    })
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 
+  
   const responseData = await response.json();
 
   if (!response.ok) {
@@ -61,27 +70,28 @@ async function auth(payload: { email: string; password: string },mode: string) {
   }
   else {
     const expiresIn = +responseData.expiresIn * 1000;
-  const expirationDate = new Date().getTime() + expiresIn;
-  localStorage.setItem('token', responseData.idToken);
-  localStorage.setItem('userId', responseData.localId);
-  localStorage.setItem('tokenExpiration', expirationDate.toString());
+    const expirationDate = new Date().getTime() + expiresIn;
+    localStorage.setItem('token', responseData.token);
+    localStorage.setItem('userId', responseData.userId);
+    localStorage.setItem('tokenExpiration', expirationDate.toString());
 
-  timer = setTimeout(() => {
-    autoLogout();
-  }, expiresIn);
+    timer = setTimeout(() => {
+      autoLogout();
+    }, expiresIn);
 
-  setUser({
-    token: responseData.idToken,
-    userId: responseData.localId
-  });
+    setUser({
+      token: responseData.token,
+      userId: responseData.userId,
+      isAuth:true
+    });
   }
 }
 
 async function login(user: UserModel) {
-  auth(user,'login');
+ await auth(user, 'login');
 }
 async function signup(user: UserModel) {
-  auth(user,'signup');
+ await auth(user, 'signup');
 }
 
 export function tryLogin() {
@@ -90,7 +100,7 @@ export function tryLogin() {
   const tokenExpiration = localStorage.getItem('tokenExpiration') ?? 0;
 
   const expiresIn = +tokenExpiration - new Date().getTime();
-  if(expiresIn < 0){
+  if (expiresIn < 0) {
     return;
   }
 
@@ -101,17 +111,15 @@ export function tryLogin() {
   if (token && userId) {
     setUser({
       token: token,
-      userId: userId
+      userId: userId,
+      isAuth:true
     });
   }
 }
 
-
 // getters
-export const userId= computed(() => state.userId);
-export const token = computed(() => state.token);
-export const isAuth = computed(() => !!state.token);
-export const authError  = computed(() => state.error);
+export const isAuth = computed(() => state.isAuth);
+export const authError = computed(() => state.error);
 export const didAutoLogout = computed(() => state.didAutoLogout);
 
 
@@ -156,9 +164,10 @@ export async function send() {
       password: authData.password.value,
     };
 
-   method === 'login' ? await login(user) : await signup(user);
-   authData.email.value='';
-   authData.password.value='';
+    const authFunc = method === 'login' ?  login :  signup;
+    await authFunc(user);
+    authData.email.value = '';
+    authData.password.value = '';
 
   } catch (ex) {
     console.log(ex);

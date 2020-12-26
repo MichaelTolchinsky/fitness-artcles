@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import {  defineComponent } from "vue";
 import {articles,loadArticles} from '../../hooks/articles';
 
 export default defineComponent({
