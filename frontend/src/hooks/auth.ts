@@ -34,8 +34,10 @@ export function logout() {
   setUser({
     token: '',
     userId: '',
-    isAuth:false
+    isAuth:false,
   });
+  state.error = '';
+  
 }
 
 function autoLogout() {

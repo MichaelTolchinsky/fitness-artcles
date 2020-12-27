@@ -71,6 +71,8 @@ export default defineComponent({
        console.log(isAuth.value);
        if(isAuth.value === true){
          router.replace('/articles');
+         authData.email.error = '';
+         authData.password.error = '';
        }
        
     };
