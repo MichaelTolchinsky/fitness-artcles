@@ -68,7 +68,7 @@ export default defineComponent({
 
     const auth = async () => {
       await send();
-       console.log(isAuth.value);
+       
        if(isAuth.value === true){
          router.replace('/articles');
          authData.email.error = '';

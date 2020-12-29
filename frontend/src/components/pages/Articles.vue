@@ -1,16 +1,16 @@
 <template>
   <div class="main-grid">
     <ul class="articleBlock-list bb-list--plain">
-      <li class="articleBlock-listItem" v-for="art in articles" :key="art.id">
+      <li class="articleBlock-listItem" v-for="art in articles" :key="art._id">
         <figure class="articleCard">
-          <router-link :to="'/articles/'+art.id" class="articleCard-link" :title="art.subtitle">
+          <router-link :to="'/articles/'+art._id" class="articleCard-link" :title="art.subtitle">
             <div class="articleCard-imageContainer">
             <img class="articleCard-image" :src="art.imageUrl" :alt="art.title">
             </div>  
           </router-link>
           <figcaption class="articleCard-figcaption">
             <h3 class="articleCard-title">
-              <router-link class="articleCard-descriptionLink" :to="'/articles/'+art.id">{{art.title}}</router-link>
+              <router-link class="articleCard-descriptionLink" :to="'/articles/'+art._id">{{art.title}}</router-link>
             </h3>
           </figcaption>
         </figure>

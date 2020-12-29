@@ -4,7 +4,6 @@ import { computed, reactive, ref } from "vue";
 const Articles = ref<Article[]>();
 
 export const articleData = reactive({
-  id: new Date().toISOString(),
   title: '',
   subtitle: '',
   imageUrl: '',
@@ -15,43 +14,43 @@ export const articleData = reactive({
 
 const setArticles = (articles: Article[]) => Articles.value = articles;
 
-export const addArticle = async () => {
-  const response = await fetch(process.env.VUE_APP_DB_KEY, {
-    method: 'POST',
-    body: JSON.stringify(articleData),
-  });
+const articlesApiUrl = 'http://localhost:4000/articles'; //for compose
+//const articlesApiUrl = '/api/articles'; //for k8s
 
-  if (!response.ok) {
-    const error = new Error('failed to add article');
-    throw error;
+export const addArticle = async () => {
+  try {
+    const response = await fetch(articlesApiUrl + '/add-article', {
+      method: 'POST',
+      body: JSON.stringify(articleData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const error = new Error('failed to add article');
+      throw error;
+    }
+  } catch (error) {
+    console.log(error);
   }
+
 };
 
 export const loadArticles = async () => {
-  const response = await fetch(process.env.VUE_APP_DB_KEY);
+  try {
+    const response = await fetch(articlesApiUrl + '/articles');
+    const responseData = await response.json();
 
-  const responseData = await response.json();
-  if (!response.ok) {
-    const error = new Error(responseData.message || 'failed to fetch');
-    throw error;
+    if (!response.ok) {
+      const error = new Error(responseData.message || 'failed to fetch');
+      throw error;
+    }
+    
+    setArticles(responseData.articles);
+  } catch (error) {
+    console.log(error);
   }
-
-  const articles = [];
-  for (const key in responseData) {
-    const article = {
-      id: key,
-      title: responseData[key].title,
-      subtitle: responseData[key].subtitle,
-      imageUrl: responseData[key].imageUrl,
-      author: responseData[key].author,
-      date: responseData[key].date,
-      content: responseData[key].content,
-
-    };
-    articles.push(article);
-  }
-
-  setArticles(articles);
 };
 
 export const articles = computed(() => Articles.value);

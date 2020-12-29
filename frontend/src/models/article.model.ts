@@ -1,5 +1,5 @@
 export default interface Article {
-  id:string;
+  _id:string;
   imageUrl:string;
   title:string;
   subtitle:string;

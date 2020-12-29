@@ -1,7 +1,7 @@
 <template>
   <div class="author-info">
       <p class="author-name">{{author}}</p>
-      <p class="author-date">{{date}}</p>
+      <p class="author-date">{{printTime(date)}}</p>
     </div>
 </template>
 
@@ -10,6 +10,13 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   props:['author','date'],
+  setup(){
+    const printTime = (time: string|number|Date) => {
+      return new Date(time).toDateString();
+    }
+
+    return { printTime };
+  }
 })
 </script>
 

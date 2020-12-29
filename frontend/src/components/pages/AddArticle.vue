@@ -4,40 +4,24 @@
       <form @submit.prevent="addArticle">
         <div class="form-control">
           <label for="title">Title</label>
-          <input
-            type="text"
-            id="title"
-            v-model.trim="articleData.title"
-          />
+          <input type="text" id="title" v-model.trim="articleData.title" />
         </div>
         <div class="form-control">
           <label for="subtitle">Subtitle</label>
-          <input
-            type="text"
-            id="subtitle"
-            v-model="articleData.subtitle"
-          />
+          <input type="text" id="subtitle" v-model="articleData.subtitle" />
         </div>
         <div class="form-control">
           <label for="imageUrl">Image Url</label>
-          <input
-            type="text"
-            id="imageUrl"
-            v-model="articleData.imageUrl"
-          />
+          <input type="text" id="imageUrl" v-model="articleData.imageUrl" />
         </div>
         <div class="form-control">
           <label for="author">Author</label>
-          <input
-            type="text"
-            id="author"
-            v-model="articleData.author"
-          />
+          <input type="text" id="author" v-model="articleData.author" />
         </div>
         <div class="form-control">
           <label for="content">Content</label>
           <textarea
-          rows="5"
+            rows="5"
             id="content"
             v-model="articleData.content"
           ></textarea>
@@ -51,12 +35,22 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import {addArticle,articleData,isArticleDataInvalid} from '../../hooks/articles';
+import {
+  addArticle,
+  articleData,
+  isArticleDataInvalid,
+} from "../../hooks/articles";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
-  setup(){
-    return{addArticle,articleData,isArticleDataInvalid};
-  }
+  setup() {
+
+    return {
+      addArticle,
+      articleData,
+      isArticleDataInvalid,
+    };
+  },
 });
 </script>
 
@@ -76,7 +70,8 @@ label {
   display: block;
 }
 
-input,textarea {
+input,
+textarea {
   display: block;
   width: 100%;
   font: inherit;
@@ -85,8 +80,7 @@ input,textarea {
 }
 
 input:focus,
-textarea:focus
- {
+textarea:focus {
   border-color: #000a91;
   background-color: #faf6ff;
   outline: none;

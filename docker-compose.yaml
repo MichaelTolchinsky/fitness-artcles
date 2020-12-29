@@ -11,12 +11,24 @@ services:
       - ./auth-api:/app
       - /app/node_modules
     env_file: 
-      - ./auth-api/.env
+      - ./env/.env
+
+  articles-api:
+    build:
+      context: ./articles-api
+      dockerfile: Dockerfile
+    ports: 
+      - '4000:4000'
+    volumes: 
+      - ./articles-api:/app
+      - /app/node_modules
+    env_file: 
+      - ./env/.env
 
   vue-app:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports: 
       - '5000:8080'
     volumes: 
@@ -26,3 +38,4 @@ services:
     tty: true
     depends_on: 
       - auth-api
+      - articles-api

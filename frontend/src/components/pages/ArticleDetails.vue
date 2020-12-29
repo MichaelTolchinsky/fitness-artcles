@@ -21,7 +21,7 @@ export default defineComponent({
   components:{ArticleHeader, ArticleImage, AuthorInfo, ArticleContent},
   setup(){
     const route = useRoute();
-    const currentArticle = computed(() => articles.value?.find((art: Article) => art.id === route.params.id));
+    const currentArticle = computed(() => articles.value?.find((art: Article) => art._id === route.params.id));
 
     return {currentArticle};
   }
