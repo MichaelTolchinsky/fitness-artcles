@@ -10,8 +10,8 @@ const state = reactive({
   isAuth: false
 });
 
-const authApiUrl = 'http://localhost:3000/auth'; //for compose
-//const authApiUrl = '/api/auth'; //for k8s
+//const authApiUrl = 'http://localhost:3000/auth'; //for compose
+const authApiUrl = '/api/auth'; //for k8s
 
 // mutations
 function setUser(payload: { token: string; userId: string; isAuth: boolean }) {

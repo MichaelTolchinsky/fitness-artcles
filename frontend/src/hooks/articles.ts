@@ -14,8 +14,8 @@ export const articleData = reactive({
 
 const setArticles = (articles: Article[]) => Articles.value = articles;
 
-const articlesApiUrl = 'http://localhost:4000/articles'; //for compose
-//const articlesApiUrl = '/api/articles'; //for k8s
+//const articlesApiUrl = 'http://localhost:4000/articles'; //for compose
+const articlesApiUrl = '/api/articles'; //for k8s
 
 export const addArticle = async () => {
   try {
